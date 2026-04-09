@@ -18,6 +18,7 @@ export class UpdateUserPasswordHandler implements ICommandHandler<UpdateUserPass
         const user = await this._user_repository.findOne({ where: { id: command.id } });
         if (!user) throw new EntityNotFoundError(UserRepository, command.id);
         user.password = await PasswordToHash.hash(command.password);
+        user.updatedAt = new Date();
         const result = await this._user_repository.update(command.id, user);
         return result?.affected && result.affected > 0 ? true : false;
     }
