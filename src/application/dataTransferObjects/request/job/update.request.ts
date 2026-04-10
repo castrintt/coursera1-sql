@@ -1,7 +1,7 @@
-export class GetJobByIdResponse {
+export class UpdateJobRequest {
     constructor(
         public readonly id: string,
-        public readonly enterpriseName:string,
+        public readonly enterpriseName: string,
         public readonly jobTitle: string,
         public readonly candidatedAt: Date,
         public readonly jobLink: string,

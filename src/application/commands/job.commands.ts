@@ -17,7 +17,6 @@ export class UpdateJobCommand {
         public readonly candidatedAt: Date,
         public readonly jobLink: string,
         public readonly observation: string,
-        public readonly name: string,
     ) { }
 }
 

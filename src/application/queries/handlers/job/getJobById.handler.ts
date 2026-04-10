@@ -15,6 +15,6 @@ export class GetJobByIdHandler implements IQueryHandler<GetJobByIdQuery> {
     async execute(query: GetJobByIdQuery): Promise<GetJobByIdResponse> {
         const job = await this._job_repository.findOne({ where: { id: query.id } });
         if (!job) throw new EntityNotFoundError(JobRepository, query.id);
-        return new GetJobByIdResponse(job.id, job.jobTitle, job.candidatedAt, job.jobLink, job.observation);
+        return new GetJobByIdResponse(job.id, job.enterpriseName, job.jobTitle, job.candidatedAt, job.jobLink, job.observation);
     }
 }
