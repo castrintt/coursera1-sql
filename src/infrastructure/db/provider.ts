@@ -1,4 +1,3 @@
-
 import { DataSource } from 'typeorm';
 
 const DATABASE_NAME = 'mysql-coursera';
