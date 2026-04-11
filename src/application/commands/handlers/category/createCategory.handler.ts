@@ -17,12 +17,17 @@ export class CreateCategoryHandler implements ICommandHandler<CreateCategoryComm
     async execute(command: CreateCategoryCommand): Promise<boolean> {
         const user = await this._user_repository.findOne({ where: { id: command.userId } });
         if (!user) throw new EntityNotFoundError(UserRepository, command.userId);
+        await this._category_repository.save(this.mapCommandToRepository(command, user));
+        return true;
+    }
+
+
+    private mapCommandToRepository(command: CreateCategoryCommand, user: UserRepository): CategoryRepository {
         const category = new CategoryRepository();
         category.name = command.name;
         category.createdAt = new Date();
         category.updatedAt = new Date();
         category.user = user;
-        await this._category_repository.save(category);
-        return true;
+        return category
     }
 }

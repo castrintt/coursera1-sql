@@ -17,9 +17,13 @@ export class UpdateUserPasswordHandler implements ICommandHandler<UpdateUserPass
     async execute(command: UpdateUserPasswordCommand): Promise<boolean> {
         const user = await this._user_repository.findOne({ where: { id: command.id } });
         if (!user) throw new EntityNotFoundError(UserRepository, command.id);
-        user.password = await PasswordToHash.hash(command.password);
-        user.updatedAt = new Date();
+        this.mapCommandToRepository(user, command);
         const result = await this._user_repository.update(command.id, user);
         return result?.affected && result.affected > 0 ? true : false;
+    }
+
+    private async mapCommandToRepository(user: UserRepository, command: UpdateUserPasswordCommand): Promise<void> {
+        user.password = await PasswordToHash.hash(command.password);
+        user.updatedAt = new Date();
     }
 }

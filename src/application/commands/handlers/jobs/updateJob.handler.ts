@@ -14,12 +14,16 @@ export class UpdateJobHandler implements ICommandHandler<UpdateJobCommand> {
     async execute(command: UpdateJobCommand): Promise<boolean> {
         const job = await this._job_repository.findOne({ where: { id: command.id } });
         if (!job) throw new EntityNotFoundError(JobRepository, command.id);
+        this.mapCommandToRepository(job, command);
+        const result = await this._job_repository.update(command.id, job);
+        return result?.affected && result.affected > 0 ? true : false;
+    }
+
+    private mapCommandToRepository(job: JobRepository, command: UpdateJobCommand): void {
         job.enterpriseName = command.enterpriseName;
         job.jobTitle = command.jobTitle;
         job.candidatedAt = command.candidatedAt;
         job.jobLink = command.jobLink;
         job.observation = command.observation;
-        const result = await this._job_repository.update(command.id, job);
-        return result?.affected && result.affected > 0 ? true : false;
     }
 }

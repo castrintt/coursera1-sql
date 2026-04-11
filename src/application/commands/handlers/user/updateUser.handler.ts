@@ -16,10 +16,15 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
     async execute(command: UpdateUserCommand): Promise<boolean> {
         const user = await this._user_repository.findOne({ where: { id: command.id } });
         if (!user) throw new EntityNotFoundError(UserRepository, command.id);
+        this.mapCommandToRepository(user, command);
+        const result = await this._user_repository.update(command.id, user);
+        return result?.affected && result.affected > 0 ? true : false;
+    }
+
+
+    private mapCommandToRepository(user: UserRepository, command: UpdateUserCommand): void {
         user.name = command.name;
         user.email = command.email;
         user.updatedAt = new Date();
-        const result = await this._user_repository.update(command.id, user);
-        return result?.affected && result.affected > 0 ? true : false;
     }
 }

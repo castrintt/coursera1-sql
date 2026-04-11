@@ -16,13 +16,17 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     ) { }
 
     async execute(command: CreateUserCommand): Promise<{ id: string }> {
+        const user = await this.mapCommandToRepository(command)
+        const { id } = await this._user_repository.save(user)
+        return { id };
+    }
+
+    private async mapCommandToRepository(command: CreateUserCommand): Promise<CreateUserCommand> {
         const hashPassword = await PasswordToHash.hash(command.password);
-        const commandWithHashPassword = new CreateUserCommand(
+        return new CreateUserCommand(
             command.name,
             command.email,
             hashPassword,
-        );
-        const { id } = await this._user_repository.save(commandWithHashPassword)
-        return { id };
+        );;
     }
 }

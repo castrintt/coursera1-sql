@@ -12,15 +12,19 @@ export class CreateJobHandler implements ICommandHandler<CreateJobCommand> {
     ) { }
 
     async execute(command: CreateJobCommand): Promise<boolean> {
-        const job = new JobRepository();
+        await this._job_repository.save(this.mapCommandToRepository(command));
+        return true;
+    }
+
+    private mapCommandToRepository(command: CreateJobCommand): JobRepository {
+        const job = this.mapCommandToRepository(command)
         job.jobTitle = command.enterpriseName;
         job.jobTitle = command.jobTitle;
         job.candidatedAt = command.candidatedAt;
         job.jobLink = command.jobLink;
         job.observation = command.observation;
         job.category = command.categoryId;
-        await this._job_repository.save(job);
-        return true;
+        return job;
     }
 
 }   
