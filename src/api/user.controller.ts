@@ -48,6 +48,7 @@ export class UserController {
   }
 
   @Put('update')
+  @UseInterceptors(EmailAlreadyExistInterceptor)
   async updateUser(@Query('id', ParseUUIDPipe) id: string, @Body() request: UpdateUserRequest): Promise<void> {
     const command = new UpdateUserCommand(id, request.name, request.email);
     return this.commandBus.execute<UpdateUserCommand>(command);
