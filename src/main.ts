@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { GlobalInterceptors } from './shared/interceptor/global.interceptors';
-import { AppModule } from './shared/module/main.module';
+import { AppModule } from './shared/main.module';
 import { GlobalPipes } from './shared/pipes/global.pipes';
 
 async function bootstrap() {

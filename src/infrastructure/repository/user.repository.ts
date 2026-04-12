@@ -1,37 +1,17 @@
 
-import { Column, DataSource, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { CategoryRepository } from './category.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import { UserEntity } from 'src/domain/entities/user.entity';
+import { IUserRepository } from 'src/domain/interfaces/IUserRepository';
+import { UserRepositorySymbol } from 'src/IoC/symbols/user.symbols';
+import { Repository } from 'typeorm';
 
-@Entity('users')
-export class UserRepository {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+@Injectable()
+export class UserRepository implements IUserRepository {
 
-    @Column({ length: 150 })
-    name: string;
+    constructor(
+        @Inject(UserRepositorySymbol)
+        private readonly _user_repository: Repository<UserEntity>,
+    ) { }
 
-    @Column({ length: 150 })
-    email: string;
-
-    @Column({ length: 150 })
-    password: string;
-
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
-
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-    updatedAt: Date;
-
-    @OneToMany(() => CategoryRepository, (category) => category.user)
-    categories: CategoryRepository[]
 }
 
-export const UserRepositorySymbol = Symbol('UserRepository');
-
-export const userProviders = [
-    {
-        provide: UserRepositorySymbol,
-        useFactory: (dataSource: DataSource) => dataSource.getRepository(UserRepository),
-        inject: ['DATA_SOURCE'],
-    },
-];

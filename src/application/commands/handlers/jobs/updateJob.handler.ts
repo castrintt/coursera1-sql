@@ -1,29 +1,19 @@
 import { Inject } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { JobRepository, JobRepositorySymbol } from "src/infrastructure/repository/job.repository";
-import { EntityNotFoundError, Repository } from "typeorm";
+import { JobRepositorySymbol } from "src/IoC/symbols/job.symbols";
+import { type IJobRepository } from "src/domain/interfaces/IJobRepository";
 import { UpdateJobCommand } from "../../job.commands";
 
 @CommandHandler(UpdateJobCommand)
 export class UpdateJobHandler implements ICommandHandler<UpdateJobCommand> {
     constructor(
         @Inject(JobRepositorySymbol)
-        private readonly _job_repository: Repository<JobRepository>,
+        private readonly _job_repository: IJobRepository,
     ) { }
 
     async execute(command: UpdateJobCommand): Promise<boolean> {
-        const job = await this._job_repository.findOne({ where: { id: command.id } });
-        if (!job) throw new EntityNotFoundError(JobRepository, command.id);
-        this.mapCommandToRepository(job, command);
-        const result = await this._job_repository.update(command.id, job);
-        return result?.affected && result.affected > 0 ? true : false;
+        return true
     }
 
-    private mapCommandToRepository(job: JobRepository, command: UpdateJobCommand): void {
-        job.enterpriseName = command.enterpriseName;
-        job.jobTitle = command.jobTitle;
-        job.candidatedAt = command.candidatedAt;
-        job.jobLink = command.jobLink;
-        job.observation = command.observation;
-    }
+
 }

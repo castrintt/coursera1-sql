@@ -1,33 +1,22 @@
 import { Inject } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CategoryRepository, CategoryRepositorySymbol } from "src/infrastructure/repository/category.repository";
-import { UserRepository, UserRepositorySymbol } from "src/infrastructure/repository/user.repository";
-import { EntityNotFoundError, Repository } from "typeorm";
+import { CategoryRepositorySymbol } from "src/IoC/symbols/category.symbols";
+import { UserRepositorySymbol } from "src/IoC/symbols/user.symbols";
+import { type ICategoryRepository } from "src/domain/interfaces/ICategoryRepository";
+import { type IUserRepository } from "src/domain/interfaces/IUserRepository";
 import { CreateCategoryCommand } from "../../category.commands";
 
 @CommandHandler(CreateCategoryCommand)
 export class CreateCategoryHandler implements ICommandHandler<CreateCategoryCommand> {
     constructor(
         @Inject(CategoryRepositorySymbol)
-        private readonly _category_repository: Repository<CategoryRepository>,
+        private readonly _category_repository: ICategoryRepository,
         @Inject(UserRepositorySymbol)
-        private readonly _user_repository: Repository<UserRepository>,
+        private readonly _user_repository: IUserRepository,
     ) { }
 
     async execute(command: CreateCategoryCommand): Promise<boolean> {
-        const user = await this._user_repository.findOne({ where: { id: command.userId } });
-        if (!user) throw new EntityNotFoundError(UserRepository, command.userId);
-        await this._category_repository.save(this.mapCommandToRepository(command, user));
-        return true;
+        return true
     }
 
-
-    private mapCommandToRepository(command: CreateCategoryCommand, user: UserRepository): CategoryRepository {
-        const category = new CategoryRepository();
-        category.name = command.name;
-        category.createdAt = new Date();
-        category.updatedAt = new Date();
-        category.user = user;
-        return category
-    }
 }

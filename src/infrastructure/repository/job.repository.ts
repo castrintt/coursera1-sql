@@ -1,45 +1,15 @@
 
-import { Column, DataSource, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { CategoryRepository } from './category.repository';
+import { Inject, Injectable } from '@nestjs/common';
+import { JobEntity } from 'src/domain/entities/job.entity';
+import { IJobRepository } from 'src/domain/interfaces/IJobRepository';
+import { JobRepositorySymbol } from 'src/IoC/symbols/job.symbols';
+import { Repository } from 'typeorm';
 
-@Entity('job')
-export class JobRepository {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+@Injectable()
+export class JobRepository implements IJobRepository {
 
-    @Column()
-    enterpriseName: string
-
-    @Column()
-    jobTitle: string
-
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    candidatedAt: Date
-
-    @Column({ length: 255, nullable: true })
-    jobLink: string
-
-    @Column({ length: 255, nullable: true })
-    observation: string
-
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
-
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
-    updatedAt: Date;
-
-    @ManyToOne(() => CategoryRepository, (category) => category.jobs)
-    @JoinColumn({ name: 'categoryId' })
-    category: string;
-
+    constructor(
+        @Inject(JobRepositorySymbol)
+        private readonly _job_repository: Repository<JobEntity>,
+    ) { }
 }
-
-export const JobRepositorySymbol = Symbol('JobRepository');
-
-export const jobProviders = [
-    {
-        provide: JobRepositorySymbol,
-        useFactory: (dataSource: DataSource) => dataSource.getRepository(JobRepository),
-        inject: ['DATA_SOURCE'],
-    },
-];

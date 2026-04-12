@@ -1,13 +1,28 @@
-import { CategoryEntity } from "./caterogy.entity";
 
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { CategoryEntity } from './category.entity';
+
+@Entity('users')
 export class UserEntity {
-    constructor(
-        public readonly id: string,
-        public readonly name: string,
-        public readonly email: string,
-        public readonly password: string,
-        public readonly categories: CategoryEntity[],
-        public readonly createdAt: Date,
-        public readonly updatedAt: Date,
-    ) { }
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
+    @Column({ length: 150 })
+    name: string;
+
+    @Column({ length: 150 })
+    email: string;
+
+    @Column({ length: 150 })
+    password: string;
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
+
+    @OneToMany(() => CategoryEntity, (category) => category.user)
+    categories: CategoryEntity[]
 }
+

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { UserRepository, UserRepositorySymbol } from "src/infrastructure/repository/user.repository";
-import { EntityNotFoundError, Repository } from "typeorm";
+import { type IUserRepository } from "src/domain/interfaces/IUserRepository";
+import { UserRepositorySymbol } from "src/IoC/symbols/user.symbols";
 import { UpdateUserCommand } from "../../user.command";
 
 
@@ -10,21 +10,10 @@ import { UpdateUserCommand } from "../../user.command";
 export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
     constructor(
         @Inject(UserRepositorySymbol)
-        private readonly _user_repository: Repository<UserRepository>,
+        private readonly _user_repository: IUserRepository,
     ) { }
 
     async execute(command: UpdateUserCommand): Promise<boolean> {
-        const user = await this._user_repository.findOne({ where: { id: command.id } });
-        if (!user) throw new EntityNotFoundError(UserRepository, command.id);
-        this.mapCommandToRepository(user, command);
-        const result = await this._user_repository.update(command.id, user);
-        return result?.affected && result.affected > 0 ? true : false;
-    }
-
-
-    private mapCommandToRepository(user: UserRepository, command: UpdateUserCommand): void {
-        user.name = command.name;
-        user.email = command.email;
-        user.updatedAt = new Date();
+        return true
     }
 }

@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { UserRepository, UserRepositorySymbol } from "src/infrastructure/repository/user.repository";
-import { Repository } from "typeorm";
+import { UserRepositorySymbol } from "src/IoC/symbols/user.symbols";
+import { type IUserRepository } from "src/domain/interfaces/IUserRepository";
 import { DeleteUserCommand } from "../../user.command";
 
 @Injectable()
@@ -10,11 +10,10 @@ export class DeleteUserHandler implements ICommandHandler<DeleteUserCommand> {
 
     constructor(
         @Inject(UserRepositorySymbol)
-        private readonly _user_repository: Repository<UserRepository>,
+        private readonly _user_repository: IUserRepository,
     ) { }
 
     async execute(command: DeleteUserCommand): Promise<boolean> {
-        const result = await this._user_repository.delete(command.id);
-        return result?.affected && result.affected > 0 ? true : false;
+        return true
     }
 }

@@ -1,16 +1,21 @@
 import { Module } from "@nestjs/common";
 import { CqrsModule } from '@nestjs/cqrs';
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { JobController } from "src/api/job.controller";
 import { CreateJobHandler } from "src/application/commands/handlers/jobs/createJob.handler";
 import { DeleteJobHandler } from "src/application/commands/handlers/jobs/deleteJob.handler";
 import { SwitchJobCategoryHandler } from "src/application/commands/handlers/jobs/switchJobCategory.handler";
 import { UpdateJobHandler } from "src/application/commands/handlers/jobs/updateJob.handler";
 import { GetJobByIdHandler } from "src/application/queries/handlers/job/getJobById.handler";
-import { DatabaseModule } from "src/infrastructure/db/database.module";
-import { jobProviders } from "src/infrastructure/repository/job.repository";
+import { JobEntity } from "src/domain/entities/job.entity";
+import { JobRepository } from "src/infrastructure/repository/job.repository";
+import { JobRepositorySymbol } from "../symbols/job.symbols";
 
 @Module({
-    imports: [CqrsModule, DatabaseModule],
+    imports: [
+        CqrsModule,
+        TypeOrmModule.forFeature([JobEntity]),
+    ],
     controllers: [JobController],
     providers: [
         //commands
@@ -18,12 +23,16 @@ import { jobProviders } from "src/infrastructure/repository/job.repository";
         UpdateJobHandler,
         DeleteJobHandler,
         SwitchJobCategoryHandler,
-        
+
         //queries
         GetJobByIdHandler,
 
         //repository
-        ...jobProviders,
+        {
+            provide: JobRepositorySymbol,
+            useClass: JobRepository,
+        }
     ],
+
 })
 export class JobsContainerModule { }

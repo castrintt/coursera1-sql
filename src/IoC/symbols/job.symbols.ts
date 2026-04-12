@@ -1,0 +1,1 @@
+export const JobRepositorySymbol = Symbol('JobRepository');

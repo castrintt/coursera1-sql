@@ -1,8 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { GetByIdResponse } from "src/application/dataTransferObjects/response/user/getById.response";
-import { UserRepository, UserRepositorySymbol } from "src/infrastructure/repository/user.repository";
-import { EntityNotFoundError, Repository } from "typeorm";
+import { type IUserRepository } from "src/domain/interfaces/IUserRepository";
+import { UserRepositorySymbol } from "src/IoC/symbols/user.symbols";
 import { GetUserByIdQuery } from "../../user.query";
 
 
@@ -11,19 +11,11 @@ import { GetUserByIdQuery } from "../../user.query";
 export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
     constructor(
         @Inject(UserRepositorySymbol)
-        private readonly _user_repository: Repository<UserRepository>,
+        private readonly _user_repository: IUserRepository,
     ) { }
 
 
     async execute(query: GetUserByIdQuery): Promise<GetByIdResponse> {
-        const user = await this._user_repository.findOne({ where: { id: query.userId }, relations: ['categories'] });
-        if (!user) throw new EntityNotFoundError(UserRepository, query.userId);
-        return new GetByIdResponse(
-            user.id,
-            user.name,
-            user.email,
-            user.createdAt,
-            user.updatedAt,
-        );
+        return {} as GetByIdResponse
     }
 }
