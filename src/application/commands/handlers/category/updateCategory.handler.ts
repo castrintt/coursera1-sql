@@ -1,4 +1,4 @@
-import { Inject } from "@nestjs/common";
+import { Inject, NotFoundException } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { type ICategoryRepository } from "src/domain/interfaces/ICategoryRepository";
 import { CategoryRepositorySymbol } from "src/modules/symbols/symbols";
@@ -12,6 +12,15 @@ export class UpdateCategoryHandler implements ICommandHandler<UpdateCategoryComm
     ) { }
 
     async execute(command: UpdateCategoryCommand): Promise<boolean> {
-        return true
+        const category = await this._category_repository.findById(command.id);
+        if (!category) {
+            throw new NotFoundException(`Category not found with id: ${command.id}`);
+        }
+        category.name = command.name;
+        if (command.order !== undefined) {
+            category.order = command.order;
+        }
+        await this._category_repository.save(category);
+        return true;
     }
 }

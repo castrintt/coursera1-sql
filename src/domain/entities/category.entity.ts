@@ -11,6 +11,9 @@ export class CategoryEntity {
     @Column({ length: 150 })
     name: string;
 
+    @Column({ name: 'sort_order', type: 'int', default: 0 })
+    order: number;
+
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 

@@ -30,6 +30,6 @@ export class JobEntity {
 
     @ManyToOne(() => CategoryEntity, (category) => category.jobs)
     @JoinColumn({ name: 'categoryId' })
-    category: string;
+    category: CategoryEntity;
 
 }

@@ -26,13 +26,13 @@ export class CategoryController {
 
   @Post('create')
   async createCategory(@Body() request: CreateCategoryRequest): Promise<void> {
-    const command = new CreateCategoryCommand(request.userId, request.name);
+    const command = new CreateCategoryCommand(request.userId, request.name, request.order);
     return this._command_bus.execute(command);
   }
 
   @Put('update')
   async updateCategory(@Body() request: UpdateCategoryRequest): Promise<void> {
-    const command = new UpdateCategoryCommand(request.id, request.name);
+    const command = new UpdateCategoryCommand(request.id, request.name, request.order);
     return this._command_bus.execute(command);
   }
 

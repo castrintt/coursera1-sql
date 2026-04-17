@@ -1,4 +1,4 @@
-import { Inject } from "@nestjs/common";
+import { Inject, NotFoundException } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
 import { type ICategoryRepository } from "src/domain/interfaces/ICategoryRepository";
 import { CategoryRepositorySymbol } from "src/modules/symbols/symbols";
@@ -12,6 +12,10 @@ export class DeleteCategoryHandler implements ICommandHandler<DeleteCategoryComm
     ) { }
 
     async execute(command: DeleteCategoryCommand): Promise<boolean> {
-        return true
+        const category = await this._category_repository.findById(command.id);
+        if (!category) {
+            throw new NotFoundException(`Category not found with id: ${command.id}`);
+        }
+        return this._category_repository.remove(command.id);
     }
 }
