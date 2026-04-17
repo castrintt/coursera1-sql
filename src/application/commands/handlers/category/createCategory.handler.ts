@@ -1,9 +1,9 @@
 import { Inject } from "@nestjs/common";
 import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { CategoryRepositorySymbol, UserRepositorySymbol } from "src/IoC/symbols/symbols";
 import { type ICategoryRepository } from "src/domain/interfaces/ICategoryRepository";
 import { type IUserRepository } from "src/domain/interfaces/IUserRepository";
 import { CreateCategoryCommand } from "../../category.commands";
+import { CategoryRepositorySymbol, UserRepositorySymbol } from "src/modules/symbols/symbols";
 
 @CommandHandler(CreateCategoryCommand)
 export class CreateCategoryHandler implements ICommandHandler<CreateCategoryCommand> {

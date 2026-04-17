@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JobEntity } from 'src/domain/entities/job.entity';
 import { IJobRepository } from 'src/domain/interfaces/IJobRepository';
-import { JobRepositorySymbol } from 'src/IoC/symbols/symbols';
+import { JobRepositorySymbol } from 'src/modules/symbols/symbols';
 import { Repository } from 'typeorm';
 
 @Injectable()

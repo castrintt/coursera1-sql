@@ -6,7 +6,6 @@ const DATABASE_USER = 'root';
 const DATABASE_HOST = 'localhost';
 const DATABASE_PORT = 3307;
 
-
 export const CONFIG_DB = {
     type: 'mysql',
     host: DATABASE_HOST,
@@ -14,6 +13,6 @@ export const CONFIG_DB = {
     username: DATABASE_USER,
     password: DATABASE_PASSWORD,
     database: DATABASE_NAME,
-    entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+    entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
     synchronize: true,
 } as TypeOrmModuleOptions

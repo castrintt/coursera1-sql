@@ -1,5 +1,5 @@
-import { GetByIdResponse } from "src/application/dataTransferObjects/response/user/getById.response";
 import { UserEntity } from "src/domain/entities/user.entity";
+import { GetByIdResponse } from "../dto/response/user/getById.response";
 
 export class UserMapper {
 
@@ -11,6 +11,16 @@ export class UserMapper {
             user.createdAt,
             user.updatedAt,
         );
+    }
+
+
+    public static fromFindByEmailToDomain(user: GetByIdResponse): UserEntity {
+        const entity = new UserEntity();
+        entity.name = user.name;
+        entity.email = user.email;
+        entity.createdAt = user.createdAt;
+        entity.updatedAt = user.updatedAt;
+        return entity
     }
 
 }

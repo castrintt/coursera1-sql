@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { type IUserRepository } from 'src/domain/interfaces/IUserRepository';
-import { UserRepositorySymbol } from 'src/IoC/symbols/symbols';
+import { UserRepositorySymbol } from 'src/modules/symbols/symbols';
 
 @Injectable()
 export class EmailAlreadyExistInterceptor implements NestInterceptor {
