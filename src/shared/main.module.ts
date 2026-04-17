@@ -8,31 +8,14 @@ import { AuthModule } from 'src/modules/containers/auth.module';
 import { CategoryContainerModule } from 'src/modules/containers/category.container';
 import { JobsContainerModule } from 'src/modules/containers/job.container';
 import { UserContainerModule } from 'src/modules/containers/user.container';
+import { RATE_LIMIT_OPTIONS } from './constants/rate-limit-constant';
 import { JwtAuthGuard } from './guard/jwtAuth.guard';
 
 @Module({
     imports: [
         CqrsModule.forRoot(),
         TypeOrmModule.forRoot(CONFIG_DB),
-        ThrottlerModule.forRoot({
-            throttlers: [
-                {
-                    name: 'short',
-                    ttl: 1000,
-                    limit: 3,
-                },
-                {
-                    name: 'medium',
-                    ttl: 10000,
-                    limit: 20
-                },
-                {
-                    name: 'long',
-                    ttl: 60000,
-                    limit: 100
-                }
-            ],
-        }),
+        ThrottlerModule.forRoot(RATE_LIMIT_OPTIONS),
         UserContainerModule,
         JobsContainerModule,
         CategoryContainerModule,

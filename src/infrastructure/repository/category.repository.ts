@@ -1,8 +1,7 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CategoryEntity } from "src/domain/entities/category.entity";
 import { ICategoryRepository } from "src/domain/interfaces/ICategoryRepository";
-import { CategoryRepositorySymbol } from "src/modules/symbols/symbols";
 import { Repository } from "typeorm";
 
 
