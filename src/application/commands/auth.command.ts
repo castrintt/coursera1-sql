@@ -8,3 +8,5 @@ export class SignInAuthCommand {
 export class RefreshAuthCommand {
     constructor(public readonly refreshToken: string) { }
 }
+
+export class SignOutCommand { }

@@ -6,6 +6,8 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthController } from 'src/api/auth.controller';
 import { RefreshAuthHandler } from 'src/application/commands/handlers/auth/refreshAuth.handler';
 import { SignInAuthHandler } from 'src/application/commands/handlers/auth/signInAuth.handler';
+import { SignOutHandler } from 'src/application/commands/handlers/auth/signOut.handler';
+import { ClearAuthCookiesInterceptor } from 'src/shared/interceptor/clear-auth-cookies.interceptor';
 import { SetAuthCookiesInterceptor } from 'src/shared/interceptor/set-auth-cookies.interceptor';
 import { JwtStrategy } from 'src/shared/strategy/jwt.strategy';
 import { UserContainerModule } from './user.container';
@@ -29,7 +31,9 @@ import { UserContainerModule } from './user.container';
   providers: [
     JwtStrategy,
     SignInAuthHandler,
+    SignOutHandler,
     SetAuthCookiesInterceptor,
+    ClearAuthCookiesInterceptor,
     RefreshAuthHandler,
   ],
 })

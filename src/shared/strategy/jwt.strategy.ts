@@ -3,13 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import type { Request } from 'express';
 import { Strategy } from 'passport-jwt';
+import { AUTH_COOKIE_NAMES } from 'src/shared/constants/auth-cookies';
 
 function extractJwtFromRequest(req: Request): string | null {
   const authorization = req.headers.authorization;
   if (authorization?.startsWith('Bearer ')) {
     return authorization.slice(7);
   }
-  const accessToken = req.cookies?.['access_token'];
+  const accessToken = req.cookies?.[AUTH_COOKIE_NAMES.accessToken];
   return typeof accessToken === 'string' ? accessToken : null;
 }
 

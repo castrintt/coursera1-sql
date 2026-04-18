@@ -7,11 +7,13 @@ import {
 import type { Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-const ACCESS_TOKEN_COOKIE = 'access_token';
-const REFRESH_TOKEN_COOKIE = 'refresh_token';
-const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
-const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+import {
+  ACCESS_TOKEN_MAX_AGE_MS,
+  AUTH_COOKIE_NAMES,
+  getAccessTokenSetCookieOptions,
+  getRefreshTokenSetCookieOptions,
+  REFRESH_TOKEN_MAX_AGE_MS,
+} from 'src/shared/constants/auth-cookies';
 
 function hasAuthTokens(
   data: unknown,
@@ -33,21 +35,17 @@ export class SetAuthCookiesInterceptor implements NestInterceptor {
       map((data: unknown) => {
         if (!hasAuthTokens(data)) return data;
         const { accessToken, refreshToken, ...rest } = data;
-        response.cookie(ACCESS_TOKEN_COOKIE, accessToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-          maxAge: FIFTEEN_MINUTES_MS,
-          path: '/',
-        });
+        response.cookie(
+          AUTH_COOKIE_NAMES.accessToken,
+          accessToken,
+          getAccessTokenSetCookieOptions(ACCESS_TOKEN_MAX_AGE_MS),
+        );
 
-        response.cookie(REFRESH_TOKEN_COOKIE, refreshToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
-          sameSite: 'lax',
-          maxAge: SEVEN_DAYS_MS,
-          path: '/auth',
-        });
+        response.cookie(
+          AUTH_COOKIE_NAMES.refreshToken,
+          refreshToken,
+          getRefreshTokenSetCookieOptions(REFRESH_TOKEN_MAX_AGE_MS),
+        );
 
         return rest;
       }),
