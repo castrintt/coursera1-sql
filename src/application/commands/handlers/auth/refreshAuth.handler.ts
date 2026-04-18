@@ -5,7 +5,6 @@ import { SignInAuthResult } from 'src/application/dto/response/user/signInAuth.r
 import { UserMapper } from 'src/application/mapper/user.mapper';
 import { type IUserRepository } from 'src/domain/interfaces/IUserRepository';
 import { UserRepositorySymbol } from 'src/modules/symbols/symbols';
-import { jwtConstants } from 'src/shared/constants/jwt.constant';
 import { RefreshAuthCommand } from '../../auth.command';
 
 type JwtPayload = { sub: string; email: string };
@@ -23,9 +22,7 @@ export class RefreshAuthHandler implements ICommandHandler<RefreshAuthCommand> {
 
         let payload: JwtPayload;
         try {
-            payload = this._jwt_service.verify<JwtPayload>(command.refreshToken, {
-                secret: jwtConstants.secret,
-            });
+            payload = this._jwt_service.verify<JwtPayload>(command.refreshToken);
         } catch {
             throw new UnauthorizedException('Invalid or expired refresh token');
         }

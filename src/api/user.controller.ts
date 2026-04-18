@@ -18,6 +18,7 @@ import { UpdateUserRequest } from 'src/application/dto/request/user/update.reque
 import { UpdateUserPasswordRequest } from 'src/application/dto/request/user/updatePassword.request';
 import { GetByIdResponse } from 'src/application/dto/response/user/getById.response';
 import { GetUserByIdQuery } from 'src/application/queries/user.query';
+import { Public } from 'src/shared/decorator/public.decorator';
 import { EmailAlreadyExistInterceptor } from 'src/shared/interceptor/email-already-exist.interceptor';
 
 @Injectable()
@@ -35,6 +36,7 @@ export class UserController {
   }
 
   @Post('create')
+  @Public()
   @UseInterceptors(EmailAlreadyExistInterceptor)
   async createUser(@Body() request: CreateRequest): Promise<void> {
     const command = new CreateUserCommand(request.name, request.email, request.password);

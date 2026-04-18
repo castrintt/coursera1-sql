@@ -9,6 +9,7 @@ import { AuthModule } from 'src/modules/containers/auth.module';
 import { CategoryContainerModule } from 'src/modules/containers/category.container';
 import { JobsContainerModule } from 'src/modules/containers/job.container';
 import { UserContainerModule } from 'src/modules/containers/user.container';
+import { validateEnv } from 'src/config/env.validation';
 import { RATE_LIMIT_OPTIONS } from './constants/rate-limit-constant';
 import { JwtAuthGuard } from './guard/jwtAuth.guard';
 
@@ -17,6 +18,7 @@ import { JwtAuthGuard } from './guard/jwtAuth.guard';
         ConfigModule.forRoot({
             isGlobal: true,
             envFilePath: ['.env', '.env.local'],
+            validate: validateEnv,
         }),
         CqrsModule.forRoot(),
         TypeOrmModule.forRootAsync({

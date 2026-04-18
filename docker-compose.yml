@@ -32,6 +32,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
+      JWT_SECRET: ${JWT_SECRET:?Defina JWT_SECRET no .env (mínimo 16 caracteres)}
       DATABASE_HOST: mysql
       DATABASE_PORT: "3306"
       DATABASE_USER: root

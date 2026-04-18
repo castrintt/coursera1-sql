@@ -1,28 +1,36 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { AuthController } from 'src/api/auth.controller';
 import { RefreshAuthHandler } from 'src/application/commands/handlers/auth/refreshAuth.handler';
 import { SignInAuthHandler } from 'src/application/commands/handlers/auth/signInAuth.handler';
-import { jwtConstants } from 'src/shared/constants/jwt.constant';
 import { SetAuthCookiesInterceptor } from 'src/shared/interceptor/set-auth-cookies.interceptor';
+import { JwtStrategy } from 'src/shared/strategy/jwt.strategy';
 import { UserContainerModule } from './user.container';
 
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     CqrsModule,
     UserContainerModule,
-    JwtModule.register({
+    JwtModule.registerAsync({
       global: true,
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '15m' },
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.getOrThrow<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '15m' },
+      }),
     }),
   ],
   controllers: [AuthController],
   providers: [
+    JwtStrategy,
     SignInAuthHandler,
     SetAuthCookiesInterceptor,
-    RefreshAuthHandler
+    RefreshAuthHandler,
   ],
 })
 export class AuthModule { }
