@@ -25,9 +25,16 @@ export class JobRepository implements IJobRepository {
       relations: ['category'],
     });
     if (!job) {
-      throw new NotFoundException(ApiErrorMessages.job.notFoundForId(id));
+      throw new NotFoundException(ApiErrorMessages.job.notFound);
     }
     return JobMapper.toGetByIdResponse(job);
+  }
+
+  async findJobEntityById(id: string): Promise<JobEntity | null> {
+    return this._job_repository.findOne({
+      where: { id },
+      relations: { category: { user: true } },
+    });
   }
 
   async findAllByCategoryId(categoryId: string): Promise<FindAllJobsResponse[]> {

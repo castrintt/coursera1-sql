@@ -1,6 +1,5 @@
 import {
   Inject,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
@@ -26,21 +25,20 @@ export class SignInAuthHandler implements ICommandHandler<SignInAuthCommand> {
     const userEntity = await this._user_repository.findUserEntityByEmail(
       normalizeEmail(command.email),
     );
-    if (!userEntity) {
-      throw new NotFoundException(ApiErrorMessages.user.notFoundForEmail);
-    }
 
-    const passwordMatches = await bcrypt.compare(
-      command.password,
-      userEntity.password,
-    );
-    if (!passwordMatches) {
+    const passwordMatches =
+      userEntity !== null &&
+      (await bcrypt.compare(command.password, userEntity.password));
+
+    if (!userEntity || !passwordMatches) {
       throw new UnauthorizedException(ApiErrorMessages.auth.invalidCredentials);
     }
 
-    const payload = { sub: userEntity.id, email: userEntity.email };
+    const payload = { sub: userEntity.id, email: userEntity.email, type: 'access' as const };
+    const refreshPayload = { sub: userEntity.id, email: userEntity.email, type: 'refresh' as const };
+
     const accessToken = this._jwt_service.sign(payload);
-    const refreshToken = this._jwt_service.sign(payload, { expiresIn: '7d' });
+    const refreshToken = this._jwt_service.sign(refreshPayload, { expiresIn: '7d' });
 
     const user = UserMapper.fromDomainToResponse(userEntity);
     return new SignInAuthResult(

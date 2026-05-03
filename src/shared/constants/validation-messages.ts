@@ -14,4 +14,13 @@ export const ValidationMessages = {
   entityIdMustBeUuid: 'O identificador deve ser um UUID válido.',
   sortOrderMustBeInteger: 'A ordem deve ser um número inteiro.',
   sortOrderNonNegative: 'A ordem deve ser maior ou igual a zero.',
+  enterpriseNameMustBeText: 'O nome da empresa deve ser um texto válido.',
+  enterpriseNameMaxLength: 'O nome da empresa deve ter no máximo 150 caracteres.',
+  jobTitleMustBeText: 'O título da vaga deve ser um texto válido.',
+  jobTitleMaxLength: 'O título da vaga deve ter no máximo 150 caracteres.',
+  candidatedAtMustBeDate: 'A data de candidatura deve ser uma data válida.',
+  jobLinkMustBeText: 'O link da vaga deve ser um texto válido.',
+  jobLinkMaxLength: 'O link da vaga deve ter no máximo 255 caracteres.',
+  observationMustBeText: 'A observação deve ser um texto válido.',
+  observationMaxLength: 'A observação deve ter no máximo 255 caracteres.',
 } as const;

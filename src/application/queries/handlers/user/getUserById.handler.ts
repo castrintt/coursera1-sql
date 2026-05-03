@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetByIdResponse } from 'src/application/dto/response/user/getById.response';
 import { type IUserRepository } from 'src/domain/interfaces/IUserRepository';
@@ -14,6 +14,9 @@ export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
   ) {}
 
   async execute(query: GetUserByIdQuery): Promise<GetByIdResponse> {
-    return {} as GetByIdResponse;
+    if (query.requestingUserId !== query.userId) {
+      throw new NotFoundException();
+    }
+    return this._user_repository.findById(query.userId);
   }
 }

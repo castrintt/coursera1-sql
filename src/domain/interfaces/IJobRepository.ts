@@ -5,6 +5,7 @@ import { FindAllJobsResponse } from 'src/application/dto/response/job/findAll.re
 export interface IJobRepository {
   create(job: JobEntity): Promise<{ id: string }>;
   findById(id: string): Promise<GetJobByIdResponse>;
+  findJobEntityById(id: string): Promise<JobEntity | null>;
   findAllByCategoryId(categoryId: string): Promise<FindAllJobsResponse[]>;
   update(job: Partial<JobEntity> & { id: string }): Promise<boolean>;
   switchCategory(id: string, categoryId: string): Promise<boolean>;

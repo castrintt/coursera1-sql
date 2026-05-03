@@ -1,4 +1,6 @@
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   JoinColumn,
@@ -23,11 +25,7 @@ export class CategoryEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
   @ManyToOne(() => UserEntity, (user) => user.categories, {
@@ -38,4 +36,15 @@ export class CategoryEntity {
 
   @OneToMany(() => JobEntity, (job) => job.category)
   jobs: JobEntity[];
+
+  @BeforeInsert()
+  onBeforeInsert(): void {
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+  }
+
+  @BeforeUpdate()
+  onBeforeUpdate(): void {
+    this.updatedAt = new Date();
+  }
 }

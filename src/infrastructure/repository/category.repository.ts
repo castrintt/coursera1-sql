@@ -20,7 +20,10 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async findById(id: string): Promise<CategoryEntity | null> {
-    return this._category_repository.findOne({ where: { id } });
+    return this._category_repository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
   }
 
   async getNextOrderForUser(userId: string): Promise<number> {

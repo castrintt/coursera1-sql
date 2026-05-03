@@ -8,7 +8,7 @@ import { UserRepositorySymbol } from 'src/modules/symbols/symbols';
 import { ApiErrorMessages } from 'src/shared/constants/api-error-messages';
 import { RefreshAuthCommand } from '../../auth.command';
 
-type JwtPayload = { sub: string; email: string };
+type JwtRefreshPayload = { sub: string; email: string; type: string };
 
 @CommandHandler(RefreshAuthCommand)
 export class RefreshAuthHandler implements ICommandHandler<RefreshAuthCommand> {
@@ -25,10 +25,16 @@ export class RefreshAuthHandler implements ICommandHandler<RefreshAuthCommand> {
       );
     }
 
-    let payload: JwtPayload;
+    let payload: JwtRefreshPayload;
     try {
-      payload = this._jwt_service.verify<JwtPayload>(command.refreshToken);
+      payload = this._jwt_service.verify<JwtRefreshPayload>(command.refreshToken);
     } catch {
+      throw new UnauthorizedException(
+        ApiErrorMessages.auth.refreshTokenInvalidOrExpired,
+      );
+    }
+
+    if (payload.type !== 'refresh') {
       throw new UnauthorizedException(
         ApiErrorMessages.auth.refreshTokenInvalidOrExpired,
       );
@@ -41,9 +47,11 @@ export class RefreshAuthHandler implements ICommandHandler<RefreshAuthCommand> {
       throw new UnauthorizedException(ApiErrorMessages.auth.sessionInvalid);
     }
 
-    const nextPayload = { sub: userEntity.id, email: userEntity.email };
+    const nextPayload = { sub: userEntity.id, email: userEntity.email, type: 'access' as const };
+    const nextRefreshPayload = { sub: userEntity.id, email: userEntity.email, type: 'refresh' as const };
+
     const accessToken = this._jwt_service.sign(nextPayload);
-    const refreshToken = this._jwt_service.sign(nextPayload, {
+    const refreshToken = this._jwt_service.sign(nextRefreshPayload, {
       expiresIn: '7d',
     });
 

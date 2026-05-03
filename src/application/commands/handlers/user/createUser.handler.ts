@@ -1,10 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserRepositorySymbol } from 'src/modules/symbols/symbols';
-import { type IUserRepository } from 'src/domain/interfaces/IUserRepository';
 import { UserEntity } from 'src/domain/entities/user.entity';
+import { type IUserRepository } from 'src/domain/interfaces/IUserRepository';
+import { UserRepositorySymbol } from 'src/modules/symbols/symbols';
 import { normalizeEmail } from 'src/shared/utils/normalize-email';
-import { PasswordToHash } from 'src/shared/utils/passwordToHash';
 import { CreateUserCommand } from '../../user.command';
 
 @Injectable()
@@ -19,7 +18,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     const user = new UserEntity();
     user.name = command.name.trim();
     user.email = normalizeEmail(command.email);
-    user.password = await PasswordToHash.hash(command.password);
+    user.password = command.password;
     return this._user_repository.create(user);
   }
 }

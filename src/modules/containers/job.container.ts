@@ -6,13 +6,19 @@ import { CreateJobHandler } from 'src/application/commands/handlers/jobs/createJ
 import { DeleteJobHandler } from 'src/application/commands/handlers/jobs/deleteJob.handler';
 import { SwitchJobCategoryHandler } from 'src/application/commands/handlers/jobs/switchJobCategory.handler';
 import { UpdateJobHandler } from 'src/application/commands/handlers/jobs/updateJob.handler';
+import { FindAllJobsHandler } from 'src/application/queries/handlers/job/findAllJobs.handler';
 import { GetJobByIdHandler } from 'src/application/queries/handlers/job/getJobById.handler';
 import { JobEntity } from 'src/domain/entities/job.entity';
 import { JobRepository } from 'src/infrastructure/repository/job.repository';
 import { JobRepositorySymbol } from '../symbols/symbols';
+import { CategoryContainerModule } from './category.container';
 
 @Module({
-  imports: [CqrsModule, TypeOrmModule.forFeature([JobEntity])],
+  imports: [
+    CqrsModule,
+    TypeOrmModule.forFeature([JobEntity]),
+    CategoryContainerModule,
+  ],
   controllers: [JobController],
   providers: [
     //commands
@@ -23,6 +29,7 @@ import { JobRepositorySymbol } from '../symbols/symbols';
 
     //queries
     GetJobByIdHandler,
+    FindAllJobsHandler,
 
     //repository
     {

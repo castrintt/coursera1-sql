@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { type IJobRepository } from 'src/domain/interfaces/IJobRepository';
 import { JobRepositorySymbol } from 'src/modules/symbols/symbols';
@@ -12,6 +12,10 @@ export class UpdateJobHandler implements ICommandHandler<UpdateJobCommand> {
   ) {}
 
   async execute(command: UpdateJobCommand): Promise<boolean> {
+    const job = await this._job_repository.findJobEntityById(command.id);
+    if (!job || job.category.user.id !== command.requestingUserId) {
+      throw new NotFoundException();
+    }
     return this._job_repository.update({
       id: command.id,
       enterpriseName: command.enterpriseName,

@@ -9,14 +9,9 @@ import { FindAllCategoriesHandler } from 'src/application/queries/handlers/categ
 import { CategoryEntity } from 'src/domain/entities/category.entity';
 import { CategoryRepository } from 'src/infrastructure/repository/category.repository';
 import { CategoryRepositorySymbol } from '../symbols/symbols';
-import { UserContainerModule } from './user.container';
 
 @Module({
-  imports: [
-    CqrsModule,
-    TypeOrmModule.forFeature([CategoryEntity]),
-    UserContainerModule,
-  ],
+  imports: [CqrsModule, TypeOrmModule.forFeature([CategoryEntity])],
   controllers: [CategoryController],
   providers: [
     //commands
@@ -33,5 +28,6 @@ import { UserContainerModule } from './user.container';
       useClass: CategoryRepository,
     },
   ],
+  exports: [CategoryRepositorySymbol],
 })
 export class CategoryContainerModule {}

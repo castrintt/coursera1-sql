@@ -6,8 +6,10 @@ import {
   Post,
   Put,
   Query,
+  Req,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import type { Request } from 'express';
 import {
   CreateCategoryCommand,
   DeleteCategoryCommand,
@@ -16,21 +18,25 @@ import {
 import { CreateCategoryRequest } from 'src/application/dto/request/category/create.request';
 import { UpdateCategoryRequest } from 'src/application/dto/request/category/update.request';
 import { FindAllCategoriesResponse } from 'src/application/dto/response/category/findAll.response';
-
 import { FindAllCategoriesQuery } from 'src/application/queries/category.query';
 import { brParseUuidPipe } from 'src/shared/pipes/br-parse-uuid.pipe';
+
+type AuthenticatedRequest = Request & { user: { userId: string; email: string } };
 
 @Controller('category')
 export class CategoryController {
   constructor(
     private readonly _query_bus: QueryBus,
     private readonly _command_bus: CommandBus,
-  ) { }
+  ) {}
 
   @Post('create')
-  async createCategory(@Body() request: CreateCategoryRequest): Promise<void> {
+  async createCategory(
+    @Req() req: AuthenticatedRequest,
+    @Body() request: CreateCategoryRequest,
+  ): Promise<void> {
     const command = new CreateCategoryCommand(
-      request.userId,
+      req.user.userId,
       request.name,
       request.order,
     );
@@ -38,9 +44,13 @@ export class CategoryController {
   }
 
   @Put('update')
-  async updateCategory(@Body() request: UpdateCategoryRequest): Promise<void> {
+  async updateCategory(
+    @Req() req: AuthenticatedRequest,
+    @Body() request: UpdateCategoryRequest,
+  ): Promise<void> {
     const command = new UpdateCategoryCommand(
       request.id,
+      req.user.userId,
       request.name,
       request.order,
     );
@@ -49,17 +59,18 @@ export class CategoryController {
 
   @Delete('delete')
   async deleteCategory(
+    @Req() req: AuthenticatedRequest,
     @Query('id', brParseUuidPipe) id: string,
   ): Promise<void> {
-    const command = new DeleteCategoryCommand(id);
+    const command = new DeleteCategoryCommand(id, req.user.userId);
     return this._command_bus.execute(command);
   }
 
   @Get('findAll')
   async findAllCategories(
-    @Query('userId', brParseUuidPipe) userId: string,
+    @Req() req: AuthenticatedRequest,
   ): Promise<FindAllCategoriesResponse[]> {
-    const query = new FindAllCategoriesQuery(userId);
+    const query = new FindAllCategoriesQuery(req.user.userId);
     return this._query_bus.execute(query);
   }
 }

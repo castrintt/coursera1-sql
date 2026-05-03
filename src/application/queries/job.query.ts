@@ -1,7 +1,13 @@
 export class GetJobByIdQuery {
-  constructor(public readonly id: string) {}
+  constructor(
+    public readonly id: string,
+    public readonly requestingUserId: string,
+  ) {}
 }
 
 export class FindAllJobsQuery {
-  constructor(public readonly categoryId: string) {}
+  constructor(
+    public readonly categoryId: string,
+    public readonly requestingUserId: string,
+  ) {}
 }

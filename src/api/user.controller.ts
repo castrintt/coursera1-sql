@@ -8,9 +8,11 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import type { Request } from 'express';
 import {
   CreateUserCommand,
   DeleteUserCommand,
@@ -28,6 +30,8 @@ import { Public } from 'src/shared/decorator/public.decorator';
 import { EmailAlreadyExistsGuard } from 'src/shared/guard/email-already-exists.guard';
 import { brParseUuidPipe } from 'src/shared/pipes/br-parse-uuid.pipe';
 
+type AuthenticatedRequest = Request & { user: { userId: string; email: string } };
+
 @Injectable()
 @Controller('users')
 export class UserController {
@@ -38,9 +42,10 @@ export class UserController {
 
   @Get(':id')
   async getUserById(
+    @Req() req: AuthenticatedRequest,
     @Param('id', brParseUuidPipe) id: string,
   ): Promise<GetByIdResponse> {
-    const query = new GetUserByIdQuery(id);
+    const query = new GetUserByIdQuery(id, req.user.userId);
     return this._query_bus.execute<GetUserByIdQuery, GetByIdResponse>(query);
   }
 
@@ -58,8 +63,11 @@ export class UserController {
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id', brParseUuidPipe) id: string): Promise<void> {
-    const command = new DeleteUserCommand(id);
+  async deleteUser(
+    @Req() req: AuthenticatedRequest,
+    @Param('id', brParseUuidPipe) id: string,
+  ): Promise<void> {
+    const command = new DeleteUserCommand(id, req.user.userId);
     return this._command_bus.execute<DeleteUserCommand>(command);
   }
 
@@ -67,25 +75,39 @@ export class UserController {
   @EmailUnique('update')
   @UseGuards(EmailAlreadyExistsGuard)
   async updateUser(
+    @Req() req: AuthenticatedRequest,
     @Query('id', brParseUuidPipe) id: string,
     @Body() request: UpdateUserRequest,
   ): Promise<void> {
-    const command = new UpdateUserCommand(id, request.name, request.email);
+    const command = new UpdateUserCommand(
+      id,
+      req.user.userId,
+      request.name,
+      request.email,
+    );
     return this._command_bus.execute<UpdateUserCommand>(command);
   }
 
   @Put('update_password')
   async updateUserPassword(
+    @Req() req: AuthenticatedRequest,
     @Query('id', brParseUuidPipe) id: string,
     @Body() request: UpdateUserPasswordRequest,
   ): Promise<void> {
-    const command = new UpdateUserPasswordCommand(id, request.password);
+    const command = new UpdateUserPasswordCommand(
+      id,
+      req.user.userId,
+      request.password,
+    );
     return this._command_bus.execute<UpdateUserPasswordCommand>(command);
   }
 
   @Post('send_email_reset_password')
-  async sendEmailResetPassword(@Query('id') id: string): Promise<void> {
-    const command = new SendUserResetPasswordEmailCommand(id);
+  async sendEmailResetPassword(
+    @Req() req: AuthenticatedRequest,
+    @Query('id', brParseUuidPipe) id: string,
+  ): Promise<void> {
+    const command = new SendUserResetPasswordEmailCommand(id, req.user.userId);
     return this._command_bus.execute<SendUserResetPasswordEmailCommand>(
       command,
     );

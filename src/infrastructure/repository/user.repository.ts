@@ -23,7 +23,7 @@ export class UserRepository implements IUserRepository {
   async findById(id: string): Promise<GetByIdResponse> {
     const user = await this._user_repository.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException(ApiErrorMessages.user.notFoundForId(id));
+      throw new NotFoundException(ApiErrorMessages.user.notFound);
     }
     return UserMapper.fromDomainToResponse(user);
   }
@@ -36,6 +36,10 @@ export class UserRepository implements IUserRepository {
     return UserMapper.fromDomainToResponse(user);
   }
 
+  async findUserEntityById(id: string): Promise<UserEntity | null> {
+    return this._user_repository.findOne({ where: { id } });
+  }
+
   async findUserEntityByEmail(email: string): Promise<UserEntity | null> {
     return this._user_repository.findOne({ where: { email } });
   }
@@ -43,6 +47,12 @@ export class UserRepository implements IUserRepository {
   async update(user: UserEntity): Promise<boolean> {
     return await this._user_repository
       .update(user.id, user)
+      .then((result) => (result.affected ?? 0) > 0);
+  }
+
+  async updatePassword(id: string, hashedPassword: string): Promise<boolean> {
+    return this._user_repository
+      .update(id, { password: hashedPassword })
       .then((result) => (result.affected ?? 0) > 0);
   }
 

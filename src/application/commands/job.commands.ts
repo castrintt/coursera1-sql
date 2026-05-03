@@ -1,5 +1,6 @@
 export class CreateJobCommand {
   constructor(
+    public readonly requestingUserId: string,
     public readonly enterpriseName: string,
     public readonly jobTitle: string,
     public readonly candidatedAt: Date,
@@ -12,6 +13,7 @@ export class CreateJobCommand {
 export class UpdateJobCommand {
   constructor(
     public readonly id: string,
+    public readonly requestingUserId: string,
     public readonly enterpriseName: string,
     public readonly jobTitle: string,
     public readonly candidatedAt: Date,
@@ -23,10 +25,14 @@ export class UpdateJobCommand {
 export class SwitchJobCategoryCommand {
   constructor(
     public readonly id: string,
+    public readonly requestingUserId: string,
     public readonly categoryId: string,
   ) {}
 }
 
 export class DeleteJobCommand {
-  constructor(public readonly id: string) {}
+  constructor(
+    public readonly id: string,
+    public readonly requestingUserId: string,
+  ) {}
 }

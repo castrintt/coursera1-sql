@@ -7,7 +7,9 @@ import { type ICategoryRepository } from 'src/domain/interfaces/ICategoryReposit
 import { FindAllCategoriesQuery } from '../../category.query';
 
 @QueryHandler(FindAllCategoriesQuery)
-export class FindAllCategoriesHandler implements IQueryHandler<FindAllCategoriesQuery> {
+export class FindAllCategoriesHandler
+  implements IQueryHandler<FindAllCategoriesQuery>
+{
   constructor(
     @Inject(CategoryRepositorySymbol)
     private readonly _category_repository: ICategoryRepository,
@@ -17,7 +19,7 @@ export class FindAllCategoriesHandler implements IQueryHandler<FindAllCategories
     query: FindAllCategoriesQuery,
   ): Promise<FindAllCategoriesResponse[]> {
     const categories = await this._category_repository.findByUserIdOrdered(
-      query.userId,
+      query.requestingUserId,
     );
     return categories.map((category) =>
       CategoryMapper.toFindAllResponse(category),

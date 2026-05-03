@@ -18,6 +18,6 @@ export function createTypeOrmConfig(
     password: configService.get<string>('DATABASE_PASSWORD', ''),
     database: configService.get<string>('DATABASE_NAME', 'cvgenerator'),
     entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
-    synchronize: true,
+    synchronize: configService.get<string>('NODE_ENV') !== 'production',
   };
 }

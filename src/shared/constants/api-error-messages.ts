@@ -11,16 +11,13 @@ export const ApiErrorMessages = {
   },
   user: {
     notFoundForEmail: 'Nenhum usuário encontrado para o e-mail informado.',
-    notFoundForId: (userId: string) =>
-      `Nenhum usuário encontrado com o id: ${userId}`,
+    notFound: 'Usuário não encontrado.',
   },
   category: {
-    notFoundForId: (categoryId: string) =>
-      `Nenhuma categoria encontrada com o id: ${categoryId}`,
+    notFound: 'Categoria não encontrada.',
   },
   job: {
-    notFoundForId: (jobId: string) =>
-      `Nenhum job encontrado com o id: ${jobId}`,
+    notFound: 'Job não encontrado.',
   },
   registration: {
     ambiguousEmailResponse:
