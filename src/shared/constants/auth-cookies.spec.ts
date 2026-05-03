@@ -1,8 +1,5 @@
 import type { Response } from 'express';
-import {
-  AUTH_COOKIE_NAMES,
-  clearAuthCookies,
-} from './auth-cookies';
+import { AUTH_COOKIE_NAMES, clearAuthCookies } from './auth-cookies';
 
 describe('clearAuthCookies', () => {
   it('should clear access and refresh cookies with paths / and /auth', () => {

@@ -14,29 +14,29 @@ import { RATE_LIMIT_OPTIONS } from './constants/rate-limit-constant';
 import { JwtAuthGuard } from './guard/jwtAuth.guard';
 
 @Module({
-    imports: [
-        ConfigModule.forRoot({
-            isGlobal: true,
-            envFilePath: ['.env', '.env.local'],
-            validate: validateEnv,
-        }),
-        CqrsModule.forRoot(),
-        TypeOrmModule.forRootAsync({
-            inject: [ConfigService],
-            useFactory: (configService: ConfigService) =>
-                createTypeOrmConfig(configService),
-        }),
-        ThrottlerModule.forRoot(RATE_LIMIT_OPTIONS),
-        UserContainerModule,
-        JobsContainerModule,
-        CategoryContainerModule,
-        AuthModule,
-    ],
-    providers: [
-        {
-            provide: APP_GUARD,
-            useClass: JwtAuthGuard,
-        }
-    ],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env', '.env.local'],
+      validate: validateEnv,
+    }),
+    CqrsModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        createTypeOrmConfig(configService),
+    }),
+    ThrottlerModule.forRoot(RATE_LIMIT_OPTIONS),
+    UserContainerModule,
+    JobsContainerModule,
+    CategoryContainerModule,
+    AuthModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
-export class AppModule { }
+export class AppModule {}

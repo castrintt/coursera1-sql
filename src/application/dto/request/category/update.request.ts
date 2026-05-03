@@ -1,15 +1,23 @@
-import { IsInt, IsOptional, IsString, IsUUID, MaxLength, Min } from "class-validator";
+import {
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxLength,
+  Min,
+} from 'class-validator';
+import { ValidationMessages } from 'src/shared/constants/validation-messages';
 
 export class UpdateCategoryRequest {
-    @IsUUID()
-    public readonly id: string;
+  @IsUUID('all', { message: ValidationMessages.categoryIdMustBeUuid })
+  public readonly id: string;
 
-    @IsString()
-    @MaxLength(150)
-    public readonly name: string;
+  @IsString({ message: ValidationMessages.categoryNameMustBeText })
+  @MaxLength(150, { message: ValidationMessages.categoryNameMaxLength })
+  public readonly name: string;
 
-    @IsOptional()
-    @IsInt()
-    @Min(0)
-    public readonly order?: number;
+  @IsOptional()
+  @IsInt({ message: ValidationMessages.sortOrderMustBeInteger })
+  @Min(0, { message: ValidationMessages.sortOrderNonNegative })
+  public readonly order?: number;
 }

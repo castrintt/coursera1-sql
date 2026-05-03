@@ -1,21 +1,21 @@
-import { ThrottlerModuleOptions } from "@nestjs/throttler";
+import { ThrottlerModuleOptions } from '@nestjs/throttler';
 
 export const RATE_LIMIT_OPTIONS = {
-    throttlers: [
-        {
-            name: 'short',
-            ttl: 1000,
-            limit: 3,
-        },
-        {
-            name: 'medium',
-            ttl: 10000,
-            limit: 20
-        },
-        {
-            name: 'long',
-            ttl: 60000,
-            limit: 100
-        }
-    ],
-} as ThrottlerModuleOptions
+  throttlers: [
+    {
+      name: 'short',
+      ttl: 1000,
+      limit: 3,
+    },
+    {
+      name: 'medium',
+      ttl: 10000,
+      limit: 20,
+    },
+    {
+      name: 'long',
+      ttl: 60000,
+      limit: 100,
+    },
+  ],
+} as ThrottlerModuleOptions;

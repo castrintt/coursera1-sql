@@ -1,17 +1,19 @@
-import { Inject } from "@nestjs/common";
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { type IJobRepository } from "src/domain/interfaces/IJobRepository";
-import { JobRepositorySymbol } from "src/modules/symbols/symbols";
-import { SwitchJobCategoryCommand } from "../../job.commands";
+import { Inject } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { type IJobRepository } from 'src/domain/interfaces/IJobRepository';
+import { JobRepositorySymbol } from 'src/modules/symbols/symbols';
+import { SwitchJobCategoryCommand } from '../../job.commands';
 
 @CommandHandler(SwitchJobCategoryCommand)
-export class SwitchJobCategoryHandler implements ICommandHandler<SwitchJobCategoryCommand> {
-    constructor(
-        @Inject(JobRepositorySymbol)
-        private readonly _job_repository: IJobRepository,
-    ) { }
+export class SwitchJobCategoryHandler
+  implements ICommandHandler<SwitchJobCategoryCommand>
+{
+  constructor(
+    @Inject(JobRepositorySymbol)
+    private readonly _job_repository: IJobRepository,
+  ) {}
 
-    async execute(command: SwitchJobCategoryCommand): Promise<boolean> {
-        return true
-    }
+  async execute(command: SwitchJobCategoryCommand): Promise<boolean> {
+    return this._job_repository.switchCategory(command.id, command.categoryId);
+  }
 }

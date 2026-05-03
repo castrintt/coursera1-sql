@@ -14,7 +14,9 @@ export class RequestTimingInterceptor implements NestInterceptor {
     const startedAt = Date.now();
     const entryIso = new Date().toISOString();
 
-    console.log(`[HTTP →] ${request.method} ${request.url} | entrada: ${entryIso}`);
+    console.log(
+      `[HTTP →] ${request.method} ${request.url} | entrada: ${entryIso}`,
+    );
 
     return next.handle().pipe(
       finalize(() => {

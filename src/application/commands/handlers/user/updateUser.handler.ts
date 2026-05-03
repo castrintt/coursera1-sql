@@ -1,19 +1,18 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { type IUserRepository } from "src/domain/interfaces/IUserRepository";
-import { UserRepositorySymbol } from "src/modules/symbols/symbols";
-import { UpdateUserCommand } from "../../user.command";
-
+import { Inject, Injectable } from '@nestjs/common';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { type IUserRepository } from 'src/domain/interfaces/IUserRepository';
+import { UserRepositorySymbol } from 'src/modules/symbols/symbols';
+import { UpdateUserCommand } from '../../user.command';
 
 @Injectable()
 @CommandHandler(UpdateUserCommand)
 export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
-    constructor(
-        @Inject(UserRepositorySymbol)
-        private readonly _user_repository: IUserRepository,
-    ) { }
+  constructor(
+    @Inject(UserRepositorySymbol)
+    private readonly _user_repository: IUserRepository,
+  ) {}
 
-    async execute(command: UpdateUserCommand): Promise<boolean> {
-        return true
-    }
+  async execute(command: UpdateUserCommand): Promise<boolean> {
+    return true;
+  }
 }

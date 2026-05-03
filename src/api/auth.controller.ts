@@ -1,10 +1,4 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Req,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Post, Req, UseInterceptors } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { type Request } from 'express';
 import {
@@ -20,33 +14,29 @@ import { Public } from 'src/shared/decorator/public.decorator';
 import { ClearAuthCookiesInterceptor } from 'src/shared/interceptor/clear-auth-cookies.interceptor';
 import { SetAuthCookiesInterceptor } from 'src/shared/interceptor/set-auth-cookies.interceptor';
 
-
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly _command_bus: CommandBus,
-  ) { }
+  constructor(private readonly _command_bus: CommandBus) {}
 
   @Post()
   @Public()
   @UseInterceptors(SetAuthCookiesInterceptor)
-  async signin(
-    @Body() request: CreateAuthRequest,
-  ): Promise<GetByIdResponse> {
+  async signin(@Body() request: CreateAuthRequest): Promise<GetByIdResponse> {
     return this._command_bus.execute(
       new SignInAuthCommand(request.email, request.password),
     );
   }
 
-
   @Post('refresh')
   @Public()
   @UseInterceptors(SetAuthCookiesInterceptor)
   async refresh(@Req() req: Request): Promise<GetByIdResponse> {
-    const refreshToken = req.cookies?.[
-      AUTH_COOKIE_NAMES.refreshToken
-    ] as string | undefined;
-    return this._command_bus.execute(new RefreshAuthCommand(refreshToken ?? ''));
+    const refreshToken = req.cookies?.[AUTH_COOKIE_NAMES.refreshToken] as
+      | string
+      | undefined;
+    return this._command_bus.execute(
+      new RefreshAuthCommand(refreshToken ?? ''),
+    );
   }
 
   @Post('logout')
@@ -55,5 +45,4 @@ export class AuthController {
   async logout(): Promise<SignOutResult> {
     return this._command_bus.execute(new SignOutCommand());
   }
-
 }

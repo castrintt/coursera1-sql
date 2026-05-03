@@ -1,10 +1,13 @@
-import { IsEmail, IsString } from "class-validator"
+import { IsEmail, IsString } from 'class-validator';
+import { ValidationMessages } from 'src/shared/constants/validation-messages';
 
 export class CreateRequest {
-    @IsString()
-    public readonly name: string
-    @IsEmail()
-    public readonly email: string
-    @IsString()
-    public readonly password: string
+  @IsString({ message: ValidationMessages.nameMustBeText })
+  public readonly name: string;
+
+  @IsEmail({}, { message: ValidationMessages.emailInvalid })
+  public readonly email: string;
+
+  @IsString({ message: ValidationMessages.passwordMustBeText })
+  public readonly password: string;
 }

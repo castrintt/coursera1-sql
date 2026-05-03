@@ -37,4 +37,4 @@ import { UserContainerModule } from './user.container';
     RefreshAuthHandler,
   ],
 })
-export class AuthModule { }
+export class AuthModule {}

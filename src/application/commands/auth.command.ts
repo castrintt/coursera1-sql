@@ -1,12 +1,12 @@
 export class SignInAuthCommand {
-    constructor(
-        public readonly email: string,
-        public readonly password: string,
-    ) { }
+  constructor(
+    public readonly email: string,
+    public readonly password: string,
+  ) {}
 }
 
 export class RefreshAuthCommand {
-    constructor(public readonly refreshToken: string) { }
+  constructor(public readonly refreshToken: string) {}
 }
 
-export class SignOutCommand { }
+export class SignOutCommand {}

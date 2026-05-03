@@ -17,7 +17,10 @@ import {
 
 function hasAuthTokens(
   data: unknown,
-): data is { accessToken: string; refreshToken: string } & Record<string, unknown> {
+): data is { accessToken: string; refreshToken: string } & Record<
+  string,
+  unknown
+> {
   if (typeof data !== 'object' || data === null) return false;
   const record = data as Record<string, unknown>;
   return (

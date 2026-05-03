@@ -1,4 +1,4 @@
-export class UpdateJobRequest {
+export class FindAllJobsResponse {
   constructor(
     public readonly id: string,
     public readonly enterpriseName: string,
@@ -6,5 +6,6 @@ export class UpdateJobRequest {
     public readonly candidatedAt: Date,
     public readonly jobLink: string,
     public readonly observation: string,
+    public readonly categoryId: string,
   ) {}
 }

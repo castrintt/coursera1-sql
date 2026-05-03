@@ -1,17 +1,12 @@
 import { plainToInstance } from 'class-transformer';
-import {
-  IsNotEmpty,
-  IsString,
-  MinLength,
-  validateSync,
-} from 'class-validator';
+import { IsNotEmpty, IsString, MinLength, validateSync } from 'class-validator';
+import { ApiErrorMessages } from 'src/shared/constants/api-error-messages';
 
 class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   @MinLength(16, {
-    message:
-      'JWT_SECRET must be a string with at least 16 characters. Set it in .env or the container environment.',
+    message: ApiErrorMessages.environment.jwtSecretMinLength,
   })
   JWT_SECRET!: string;
 }
