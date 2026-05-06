@@ -7,9 +7,15 @@ function parsePort(value: string | undefined, fallback: number): number {
   return Number.isNaN(parsed) ? fallback : parsed;
 }
 
+
 export function createTypeOrmConfig(
   configService: ConfigService,
 ): TypeOrmModuleOptions {
+  const sslCaBase64 = configService.get<string>('DATABASE_SSL_CA');
+  const sslCa = sslCaBase64
+    ? Buffer.from(sslCaBase64, 'base64').toString('utf-8')
+    : undefined;
+
   return {
     type: 'mysql',
     host: configService.get<string>('DATABASE_HOST', 'localhost'),
@@ -19,13 +25,13 @@ export function createTypeOrmConfig(
     database: configService.get<string>('DATABASE_NAME', 'cvgenerator'),
     entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
     synchronize: configService.get<string>('NODE_ENV') !== 'production',
-    ssl: {
-      rejectUnauthorized: true,
-    },
+    ssl: sslCa
+      ? { ca: sslCa, rejectUnauthorized: true }
+      : { rejectUnauthorized: false },
     extra: {
-      ssl: {
-        rejectUnauthorized: true,
-      },
+      ssl: sslCa
+        ? { ca: sslCa, rejectUnauthorized: true }
+        : { rejectUnauthorized: false },
     },
   };
 }
