@@ -19,5 +19,13 @@ export function createTypeOrmConfig(
     database: configService.get<string>('DATABASE_NAME', 'cvgenerator'),
     entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
     synchronize: configService.get<string>('NODE_ENV') !== 'production',
+    ssl: {
+      rejectUnauthorized: true,
+    },
+    extra: {
+      ssl: {
+        rejectUnauthorized: true,
+      },
+    },
   };
 }

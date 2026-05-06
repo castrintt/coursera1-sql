@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { validateEnv } from 'src/config/env.validation';
 import { createTypeOrmConfig } from 'src/infrastructure/db/config.db';
 import { AuthModule } from 'src/modules/containers/auth.module';
 import { CategoryContainerModule } from 'src/modules/containers/category.container';
 import { JobsContainerModule } from 'src/modules/containers/job.container';
 import { UserContainerModule } from 'src/modules/containers/user.container';
-import { validateEnv } from 'src/config/env.validation';
 import { RATE_LIMIT_OPTIONS } from './constants/rate-limit-constant';
 import { JwtAuthGuard } from './guard/jwtAuth.guard';
 
@@ -43,4 +43,4 @@ import { JwtAuthGuard } from './guard/jwtAuth.guard';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }
