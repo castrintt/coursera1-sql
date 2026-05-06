@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Req, UseInterceptors } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
+import { Throttle } from '@nestjs/throttler';
 import { type Request } from 'express';
 import {
   RefreshAuthCommand,
@@ -10,6 +11,10 @@ import type { SignOutResult } from 'src/application/commands/handlers/auth/signO
 import { CreateAuthRequest } from 'src/application/dto/request/ auth/createAuth.request';
 import { GetByIdResponse } from 'src/application/dto/response/user/getById.response';
 import { AUTH_COOKIE_NAMES } from 'src/shared/constants/auth-cookies';
+import {
+  AUTH_REFRESH_THROTTLE,
+  AUTH_SIGN_IN_THROTTLE,
+} from 'src/shared/constants/rate-limit-constant';
 import { Public } from 'src/shared/decorator/public.decorator';
 import { ClearAuthCookiesInterceptor } from 'src/shared/interceptor/clear-auth-cookies.interceptor';
 import { SetAuthCookiesInterceptor } from 'src/shared/interceptor/set-auth-cookies.interceptor';
@@ -20,6 +25,7 @@ export class AuthController {
 
   @Post()
   @Public()
+  @Throttle(AUTH_SIGN_IN_THROTTLE)
   @UseInterceptors(SetAuthCookiesInterceptor)
   async signin(@Body() request: CreateAuthRequest): Promise<GetByIdResponse> {
     return this._command_bus.execute(
@@ -29,6 +35,7 @@ export class AuthController {
 
   @Post('refresh')
   @Public()
+  @Throttle(AUTH_REFRESH_THROTTLE)
   @UseInterceptors(SetAuthCookiesInterceptor)
   async refresh(@Req() req: Request): Promise<GetByIdResponse> {
     const refreshToken = req.cookies?.[AUTH_COOKIE_NAMES.refreshToken] as

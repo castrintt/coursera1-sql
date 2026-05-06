@@ -1,7 +1,9 @@
+import { Transform } from 'class-transformer';
 import {
   IsDateString,
   IsOptional,
   IsString,
+  IsUrl,
   IsUUID,
   MaxLength,
 } from 'class-validator';
@@ -19,8 +21,21 @@ export class CreateJobRequest {
   @IsDateString({}, { message: ValidationMessages.candidatedAtMustBeDate })
   public readonly candidatedAt: string;
 
+  @Transform(({ value }) => {
+    if (value === null || value === undefined) return undefined;
+    if (typeof value !== 'string') return value;
+    const trimmed = value.trim();
+    return trimmed === '' ? undefined : trimmed;
+  })
   @IsOptional()
-  @IsString({ message: ValidationMessages.jobLinkMustBeText })
+  @IsUrl(
+    {
+      protocols: ['https'],
+      require_protocol: true,
+      require_valid_protocol: true,
+    },
+    { message: ValidationMessages.jobLinkMustBeValidHttpsUrl },
+  )
   @MaxLength(255, { message: ValidationMessages.jobLinkMaxLength })
   public readonly jobLink?: string;
 

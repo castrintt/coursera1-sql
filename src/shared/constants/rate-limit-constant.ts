@@ -19,3 +19,17 @@ export const RATE_LIMIT_OPTIONS = {
     },
   ],
 } as ThrottlerModuleOptions;
+
+/** POST /auth — reduz brute force e credential stuffing (por IP/rota). */
+export const AUTH_SIGN_IN_THROTTLE = {
+  short: { limit: 2, ttl: 10_000 },
+  medium: { limit: 5, ttl: 60_000 },
+  long: { limit: 25, ttl: 3_600_000 },
+};
+
+/** POST /auth/refresh — anti-abuso de rotação de refresh, mais folgado que o sign-in. */
+export const AUTH_REFRESH_THROTTLE = {
+  short: { limit: 5, ttl: 5_000 },
+  medium: { limit: 15, ttl: 60_000 },
+  long: { limit: 60, ttl: 3_600_000 },
+};

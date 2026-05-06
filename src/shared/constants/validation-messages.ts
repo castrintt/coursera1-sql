@@ -19,7 +19,8 @@ export const ValidationMessages = {
   jobTitleMustBeText: 'O título da vaga deve ser um texto válido.',
   jobTitleMaxLength: 'O título da vaga deve ter no máximo 150 caracteres.',
   candidatedAtMustBeDate: 'A data de candidatura deve ser uma data válida.',
-  jobLinkMustBeText: 'O link da vaga deve ser um texto válido.',
+  jobLinkMustBeValidHttpsUrl:
+    'Informe uma URL válida usando HTTPS (por exemplo, https://...).',
   jobLinkMaxLength: 'O link da vaga deve ter no máximo 255 caracteres.',
   observationMustBeText: 'A observação deve ser um texto válido.',
   observationMaxLength: 'A observação deve ter no máximo 255 caracteres.',
